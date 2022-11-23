@@ -1,0 +1,64 @@
+SISTEMAS DE FICHEIROS
+
+	podem ser usados para programas comunicarem entre si.
+
+
+	é uma coleçao de dados persistentes indicados por um nome.
+
+	os dados armazenados no ficheiro sao uma responsabilidade das aplicações que o gravam. o SO trata o ficheiro como sendo um conjunto de bytes. O formato do ficheiro é responsabilidade do programa.
+
+	Para identificar o ficheiro internamente o FS identifica cada ficheiro por um inteiro.
+
+	contém um OFFSET
+
+		cursor (ponteiro) com a posição atual do ficheiro que estamos a ler.
+
+	contém METADADOS
+
+		inclui informações essenciais do ficheiro: permissões, criador, data de criação, etc.
+
+
+DIRETORIOS
+
+	Listade ficheiros e atributos associados aos ficheiros
+
+	contém uma lista dos nomes dos ficheiros. No unix a lista de ficheiros contém o nome e o int
+
+	metadados são i-nodes e os id's são i-numbers
+
+	i-nodes são ponteiros para blocos de memoria e i-numbers são os numeros dos i-nodes
+
+
+ATRIBUTOS DO FICHEIRO
+
+	Proteção
+
+		quem pode aceder e quais operações podem fazer
+
+	Identificação do dono
+
+		----concluir com os slides 
+
+TIPOS DE FICHIEROS EM UNIX
+
+	NORMAIS
+
+		sequència em bytes sem uma organização em registos
+
+	ESPECIAIS
+
+		perifericos E/S, pipes, FIFOS, sockets.
+
+	DIRETORIOS
+
+
+FILE DESCRIPTORS
+
+	Os processos acedem a informação dos ficheiros através do numero que se chama descritor de ficheiro através duma systemCall chamada open.
+
+	ou seja, file descriptor é o identificador do ficheiro.
+
+	todas as operações CRUD são feitas referenciando o fd.
+
+
+

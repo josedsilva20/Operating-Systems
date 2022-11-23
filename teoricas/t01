@@ -1,0 +1,9 @@
+PROCESSO
+
+	programa executado naquele momento
+
+	É uma cópia do cpu (virtualizada)
+
+	Cada processo tem uma ilusão de controlar o processador sozinho
+
+
