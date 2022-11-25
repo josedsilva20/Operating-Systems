@@ -1,0 +1,76 @@
+PROGRAMAÇÃO DE SISTEMAS DE FICHEIROS
+
+	Primeiro vamos aprender a usar como users e depois vamos implementar ferramentas
+
+	Todo programa de ficheiros deve incluir o stdio.h e stdlib.h como bibliotecas
+
+	stdio.h
+
+		são funções que fazem chamadas de biblioteca (user level)
+
+		começam todas com f:
+			- fopen(), fclose(), fscanf()...
+
+
+	FUNÇÕES DE SISTEMA 
+
+		Funções de baixo nível que permitem maior controlo
+
+		disponibilizadas através da biblioteca stdio.h
+
+		Em Linux abrir e criar é a mesma função (função open () que equivale a fopen() )
+
+		fechar ---> int close(int fileDescriptor), que é o int retornado por open() e é o seu identificador de ficheiro.
+
+	ABRIR E FECHAR FICHEIROS
+
+		Quando uma open é executada, há uma tabela de ficheiros abertos
+
+		ela procura o diretorio de recurso, verifica as permissões de acesso, copia a info base sobre os atributos do ficheiro e poe na tabela dos ficheiros abertos e depois o file descriptor é a posição nessa tabela
+
+		Quando se fecha um ficheiro o SO liberta a memória 
+
+
+	PRIVILÉGIOS DE ACESSO (SEGURANÇA)
+
+
+		Modelo de autenticação dos users:
+
+			userID e grupID (UID, GID). Estes identificadores são herdados pelos processos que o referem.
+
+			estes dados estão num ficheiro na pasta etc e chama-se passwd.
+
+			o processo de login é o processo pai de todos os processos gerados por um utilizador. Ou seja, herdam do processo do login
+
+		CONTROLO DE DIREITOS DE ACESSO
+
+			O SO verifica as permissões do utilizador que está a tentar aceder ao ficheiro.
+
+
+	READ
+
+		int read(int fd, coid *buffer, size_t count)
+
+			fd é o file descriptior, *buffer endereço, size_t é o tamanho do buffer(tamanho máximo para ler). é nossa responsabilidade alocar o buffer
+
+		read retorna -1 caso haja um problema
+
+			valor += a zero que é o numero de caracteres que ele leu
+
+	WRITE
+
+		int write(int fd, void `buffer, size_t count)
+
+		quando pedimos para escrever um buffer de um tamanho devemos analisar o que foi escrito
+
+		por vezes pode não ser possível executar toda a escrita.
+
+		quando chamamos write o SO não escreve diretamente ao disco para maximizar o desempenho. E depois aplica-se apenas de uma vez a escrita ao disco.
+
+			usa-se a memória tampão para armazenar esses dados. 
+
+		para efectivar a escrita em disco usamos a função fflush() 
+
+
+
+
