@@ -1,0 +1,149 @@
+CURSOR
+
+	Para qualquer ficheiro aberto, o nucleo mantém o cursor. É um ponteiro para onde as proximas informações serão lidas ou escritas
+
+	Avança automaticamente com cada byte lido ou escrito
+
+	para controlar onde o cursor é selecionado:
+
+	int lseek (int fd, off_t offset, int whence)
+
+		offset --> descolamento
+		whence --> posição a partir do qual o deslocamento deve ser interpretado
+
+DICA:
+
+	Quando executarmos system calls devemos nos preocupar com seus valores de retorno porque C não para a sua execução se alguma coisa correr mal e não estiver explícita
+
+Podemos usar o comando strace para ver as chamadas de sistema que estão a ser chamadas (fazer tracing)
+
+_____________________________________________________________
+
+
+LINKS
+
+	Um ficheiro pode ser identificado por vários nomes
+
+	HARDLINKS
+
+		Quando temos diferentes nomes de ficheiros a apontar para o mesmo inode
+
+		cada vez que criamos um ficheiro estamos a criar um hardlink (ficheiro criado e não copiado)
+
+		Hardlink é uma cópia do ficheiro. Só que os dados de ficheiro na memória não são copiados, apenas o nome (hardlink)
+
+		cada vez que é criado um hardlink para um inode, o inode tem la um contador de hardlinks e adiciona esse hardlink. Sempre que apagamos o hardlink o contador faz --.
+
+		Um ficheiro apenas é totalmente apagado quando o seu contador de hardlinks fica == 0.
+
+		Os ficheiros com hardlinks devem pertencer todos ao mesmo file system.
+
+		a syscall que apaga ficheiros chamam-se unlink()
+
+	SOFTLINKS (SYMBOLIC LINKS OU ATALHOS)
+
+		Criamos um ficheiro que terá um inode diferente do ficheiro que estamos a apontar e o inode desse symbolic link armazena o percurso para o ficheiro alvo.
+
+		Tem um inode que aponta para outro inode.
+
+		Semelhante ao conceito de shortcut no Windows
+
+		Para ser menos constrangedor
+
+	Para experimentar criação/remoção de links:
+
+		ln, na shell
+
+		Ao usar ln sem nenhum flag criamos hardlinks, com -s fica softlink
+
+		ls -lrt diz os hardlinks do ficheiro.
+
+		comando de redireção >> faz append.
+
+
+										
+
+										CONSULTAR OS SLIDES
+
+
+
+	LER E  MODIDFICAR ATRIBUTOS DE UM FICHEIRO
+
+		para ver informação de um ficheiro:
+
+			stat (interface da shell)
+
+			fazemos: ~ stat ficheiro
+
+		existe uma system call parecida (stat) com duas variantes:
+
+			- int fstat tem que abrir primeiro o ficheiro
+
+
+
+	ALTERAR PERMISSÕES PARA FICHEIROS
+
+		Podemos usar a shell ou então a system call:
+
+			- chmod em shell: 
+
+				chmod u-rw file que remove rw permissions para o user. para adicionar basta usar +
+
+			- chmod em system call:
+
+				int chmod (const char *pathname, mode_t mode)
+
+	COMANDO MOUNT
+
+		Permite adicionar sistemas de ficheiros às nossas directorias
+
+
+
+	_____________________________________________________________________
+
+
+
+							ORGANIZAÇÃO DO DISCO
+
+	A gestão é feita em blocos de tamanho fixo. 
+
+	Se utilizarmos blocos grandes
+
+		vamos ter um tempo de transferência grande (desvangtagem)
+
+		cópias são pesadas uma unica vez
+
+		se tivermos ficheiros muito pequenos, ao usar blocos grandes muito espaço fica vazio  (desvantagem)
+
+			esse desperdício de blocos é chamado de FRAGMETAÇÃO INTERNA
+
+
+	Se utilizarmos blocos pequenos
+
+
+
+	DISCO
+
+		MASTER BOOT RECORD
+
+			ao arrancar tenta descobrir quais são as partições que têm um bloco de boot para executar um sistema operativo
+
+
+		COMO ARMAZENAR UM SISTEMA DE FICHEIROS
+
+			ORGANIZAÇÃO EM LISTAS LIGADAS:
+
+				Formato mais simples a pensar. 
+
+				usado em sistemas de ficheiros mais simples (cd e dvd) e que são escritos uma vez
+
+				DESVANTAGENS
+
+					FRAGMENTAÇÃO EXTERNA ---> espaço entre os blocos que não conseguimos usar.
+
+			ORGANIZAÇÃO EM DIRETORIOS E DADOS (ALTERNATIVA 2)
+
+				Compacta toda a informação a percorrer em todo disco
+
+
+			
