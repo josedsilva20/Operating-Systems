@@ -1,0 +1,59 @@
+ORGANIZÇÃO COM DESCRITORES INDIVIDUAIS DE FICHEIROS (I-NODES)
+
+	os i-nodes são fuardados de forma separada dos nomes
+
+	promove o uso de hardlinks
+
+	os i-nodes são guardados na memoria secundaria do disco numa tabela chamada tabela de i-nodes (array). são identificados pelo seu índice na tabela
+
+	i-nodes têm todos os mesmo tamanho
+
+	Um FS pode ter quantos ficheiros uma tabela de i-node está capacitada a suportar.
+
+	Ao fazer uma open:
+
+		- primeiro descobre-se o inode da directoria raiz
+
+			(cada ficheiro é identificado pelo seu numero de i-node)
+			(a diretoria raiz tem um inode conhecido que é 2 ou 0)
+
+		- dado o inumber, vamos buscar o inode
+
+			Vamos buscar na memoria ram uma copia da tabela de inode
+
+		- a partir do inode descobrir os índices dos blocos de dados do conteúdo do ficheiro
+
+		- Ler cada bloco do diretório e pesquisar nele uma entrada com o próximo nome do pathname.
+
+
+DESCRITOR DE VOLUMES
+
+	Descreve como internamente está formatado o disco para este FS
+
+	Como a informação é pequena, geralmente essa informação é replicada em várias regiões
+
+		em Unix num bloco especial chamado superbloco
+
+		em NTFS do windows é um ficheiro especial
+
+
+TABELA DE ALOCAÇÃ0
+
+	Usa-se um bitmap (Um array com cada entrada de espaço livre, onde o bit representa se o bloco está livre ou ocupado)
+
+
+
+
+
+SISTEMA DE FICHEIROS EXT3
+
+	As primeiras 12 entradas (slots) apontam cada uma a um bloco diferente
+
+	As restantes 3 têm um índice de indireção 1 2 e 3.
+
+	DIMENSÃO MÁXIMA DE UM FICHEIRO:
+
+		B x (12 + B/R + (B/R)^2 + (B/R)^3)
+
+	Para além de ver os blocos de alocação livres, também temos de ver os blocos de i-nodes livres.
+
