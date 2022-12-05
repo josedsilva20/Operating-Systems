@@ -1,0 +1,39 @@
+ESTRUTURAS DE SUPORETE A UTILIZAÇÃO DE FICHEIROS
+
+	cada processo tem uma tabela de ficheiros abertos
+
+		essa tabela tem n entradas e o inidice indica o file descriptor
+
+	quando executamos um open dum ficheiro com o seu proprio inode, alem de alocar uma entrada dos ficheiros abertos, existe uma tabela no sistema que guarda os dados
+
+		essa tabela é que guarda o cursor e tal
+
+	garante a existencia de uma tabela por processo
+
+
+
+	no proj é diferente:
+
+		a system file table nao existe.
+
+
+	se abrirmos n ficheiros relativos a um processo. Isto indica diferentes file descriptors
+
+		a system call dup(fd1) duplica o file descriptor de um ficheiro
+
+			isso é ujm copia (apontam os dois para uma tabela de ficheiros abertos)
+
+
+JOURNALING
+
+	é usada uma técnica baseada em loging.
+
+	quando escrevemos num bloco de dados e o setor de disco for corrompido, perdemos o bloco de dados. 
+
+	Para tolerar falhas, investimos em redundancia. 
+
+	A informação é recuperada através de escrita no disco uma entrada de journal que descreve todas as alterações feitas ao longo do tempo ao disco. 
+
+	Registamos todas as alterações
+
+	

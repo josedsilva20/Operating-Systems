@@ -1,0 +1,66 @@
+ PROJETO
+
+ 	No makefile é que está como compilar o projeto
+
+ 	na diretoria tests tem tests
+
+ 	na diretoria fs nao tem main
+
+ 	o objetivo do projeto é implementar a interface do fs. 
+
+ 	providenciadas 4 funcoes:
+
+ 		open, close, write e read
+
+ 	antes de comecar a usar o fs deve-se usar o tfs init e quando terminar usar tfs destroy
+
+ 	betterassert.h para fazer debug
+
+ 	resolver 1.1, 1.2
+
+ 	config.h tem um conjunto de contantes definidas (como inode number do root)
+
+ 	operations.c e .h
+
+ 		define a interface vista pelas apps. 
+
+ 		as apps podem interagit com o fs através das funções que ele disponibiliza
+
+ 		é aí que temos as funcionalidades que os utilizadores podem usar
+
+ 	state.c e .h
+
+ 		no .h 
+
+ 			temos as estruturas de dados
+
+ 			dir_entry_t recebe o par nome e i-node number do ficheiro
+
+ 			i-node 
+
+ 				struct composta por enum (dir ou ficheiro), tamanho do ficheiro, bloco associado ao ficheiro.
+
+ 			existe apenas uma tabela de ficheiros abertos
+
+ 			é um fs que existe em memória RAM (volátil)
+
+ 			existe varias bitmaps (para blocos, para inodes) para indicar se blocos estão livres ou ocupados
+
+
+ 		no .c
+
+ 			manipulam os dados do .h e são chamadas pela operation.c
+
+ 			state_init
+
+ 				devemos perceber bem
+
+ 				aloca todas as estruturas de dados 
+
+ 			delay é invocada para invocar atrasos sintéticos (ultimo requisito)
+
+
+PROGRAMAÇÃO COM PROCESSOS
+
+	
+
