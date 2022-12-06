@@ -1,0 +1,143 @@
+Introdução
+
+    Um processo do sistema operativo é um “programa em execução”. É uma entidade ativa, que está a usar recursos do computador, enquanto que um programa é uma entidade passiva, apenas um ficheiro com instruções a executar. Em Unix cada comando é executado por um processo independente, sejam os comandos utilitários de sistema ou programas do utilizador.
+
+    Cada processo tem um identificador numérico, chamado Process IDentifier ou PID, que é único. A estrutura de dados onde é guardada esta informação é designada por bloco de controlo de processo (Process Control Block ou PCB) e contém também mais atributos, incluindo o estado de execução do processador, os dispositivos e a memória.
+
+Hierarquia de processos
+
+    Os processos têm uma relação hierárquica: pai-filho.
+
+    Um filho herda quase todos os atributos do pai, incluindo os descritores de ficheiros. Cada processo tem um identificador único. Um processo pai pode ter múltiplos filhos, mas um filho tem apenas um único processo pai. Os identificadores são designados como PID (Process Identifier) e PPID (Parent Process Identifier).
+
+    Existem dois processos especiais no Unix. O processo com PID 0 é chamado swapper or sched que corre no núcleo e é responsável pela gestão de páginas de memória e comutação de processos. O processo 1 é chamado init e é responsável por iniciar e encerrar o sistema. Uma vez criado, o init vai ser o pai de todos os processos.
+
+    A criação de processos é feita com a chamada de sistema fork. O PID do filho é retornado ao pai, enquando que o filho recebe 0 como resultado do fork.
+
+Grupos de Processos
+
+    Quando um utilizador faz login é lhe atribuído um processo que o fica a representar com as credenciais de segurança user e group que são usadas nas validações de acesso. Fica associado a um terminal. Todos estes atributos são herdados pelo processos filho.
+
+    Um grupo de processos (process group) refere-se a uma coleção de um ou mais processos. Estes grupos permitem manter relações entre processos, para facilitar a sua gestão conjunta, e exploram as relações pai-filho que existem nos processos. Muitas vezes, estes grupos estão associados a uma sessão no terminal de texto. Normalmente existe um processo líder da sessão, que interage com o terminal, para garantir que todos os processos do grupo terminam quando o utilizador desliga da sessão.
+
+
+Processos no Terminal
+
+    1 Comando ps
+    O comando ps (process statistics ou process status) permite consultar os processos que estão ativos:
+
+    $ ps
+
+        PID TTY         TIME CMD
+       2447 pts/0   00:00:00 bash
+       2554 pts/0   00:00:00 ps
+        
+        Por omissão, apenas são mostrados os processos em execução na shell corrente.
+        
+        As colunas de informação significam:
+
+        PID - identificador do processo;
+        TTY - identificador do terminal;
+        TIME - tempo de processador usado pelo processo;
+        CMD - nome do comando, ou seja, do ficheiro executável correspondente.
+        Para ver todos os processos, fazer:
+
+    $ ps -A
+
+        Normalmente aparecem dezenas de resultados.
+        Para ver apenas os primeiros 20 resultados, pode-se combinar com o comando head:
+
+    $ ps -A | head -n 20
+        
+        Para encontrar algum processo em especial, pode-se usar o comando grep:
+
+    $ ps aux | grep systemd
+        
+        De facto, esta combinação é tão frequente, que até existe o comando pgrep:
+
+    $ pgrep systemd
+        
+        No comando ps é também possível apresentar os PID e PPID:
+
+    $ ps -ef
+        
+        Existe também o comando pstree que imprime uma representação da hierarquia dos processos:
+
+            $ pstree
+
+                2 Comandos de paragem, espera e contabilização de tempo
+                
+                Vamos agora ver outros comandos relacionados com processos.
+
+
+    $ sleep 10
+
+        O comando sleep permite criar um processo que dorme durante o número indicado de segundos.
+    
+        É possível lançar um comando em segundo plano, deixando o terminal disponível para aceitar mais comandos. No exemplo seguinte, o comando terminado com & fica a correr em segundo plano. A variável $! imprime o PID do comando anterior. $? fica com o valor de resultado do último processo.
+
+            $ sleep 10 &
+            $ echo $!
+            $ echo $?
+        
+        O comando wait permite esperar que outro processo termine. Pode receber como argumento o identificador do processo, senão espera pela conclusão de todos os processos filhos, ou seja, espera pelo resultado do comando anterior.
+
+    $ sleep 10 &
+    $ wait
+            
+    O comando time permite medir o tempo de execução de um dado comando, o que dá uma ideia do seu desempenho no que respeita ao uso do processador.
+
+    $ time sleep 10
+
+    real    0m10.003s
+    user    0m0.002s
+    sys     0m0.000s
+    Podemos ver que o comando sleep, apesar de parado por cerca de 10 segundos, apenas consumiu 2 milisegundos de tempo de processador.
+
+    O valor real (hora no relógio de parede, wall clock time) contabiliza o tempo decorrido desde o início até ao fim da execução, e inclui o tempo em que o processo esteve parado ou à espera.
+    O tempo user é o tempo efetivamente usado pelo processo ao executar o programa em modo utilizador. Finalmente, o tempo sys é o tempo do processo a executar dentro do núcleo. No user e no sys não são contabilizados os tempos de bloqueio, daí que a sua soma não coincida com o real.
+
+    3 Comando top
+    O comando top permite consultar o estado dos processos de forma dinâmica, apresentado atualizações periódicas à informação apresentada (por omissão, a cada 3 segundos). A ideia chave deste comando é mostrar os principais processos em execução, daí o nome de top dos processos.
+
+    Vamos executar o comando sem opções:
+
+    $ top
+    O resultado ocupa todo o espaço do terminal. Para sair, basta teclar q de quit.
+
+    O resultado apresenta, nas primeiras linhas, estatísticas globais sobre os processos e a utilização de recursos. Nomeadamente, pode ver-se a hora atual, o tempo de funcionamento desde o arranque do sistema (uptime), o número de utilizadores ligados, a carga de processos. Na linha seguinte, é apresentado o número total de processos, com descrição do seu estado. A seguir, é apresentada a utilização do CPU e depois da memória.
+
+    Finda a informação global, segue-se uma tabela com informação individual sobre cada processo. As colunas são:
+
+    PID - identificador do processo;
+    USER - utilizador do processo;
+    PR - prioridade de execução, valor efetivo, usado pelo núcleo;
+    NI - valor de nice, que vai de -20 a 19. Um valor maior significa que o processo é mais “simpático” e que está disponível para que lhe baixem a prioridade;
+    VIRT - uso de memória virtual;
+    RES - uso efetivo de memória física;
+    SHR - uso de memória partilhada com outros processos;
+    S - estado, por exemplo, I significa Idle e R significa Running;
+    %CPU - percentual de uso de processador;
+    %MEM - percentual de uso de memória;
+    TIME - total do tempo de processador usado;
+    COMMAND - comando que lançou o processo.
+    Para identificar os processos em execução, teclar z.
+    i mostra os processos inativos.
+
+    É possível ordenar a lista por uso de processador (teclar P - tem de ser letra maiúscula, ou seja, SHIFT + P), por uso de memória (M), por tempo de execução (T) e por número de processo (N), ou seja, por PID.
+
+    O comando top tem várias opções no lançamento. É possível filtrar para ver apenas processos de um dado utilizador:
+
+    $ top -u root
+        É possível também escolher o intervalo de refrescamento da informação:
+
+    $ top -d 5
+        Finalmente, é possível também parar um processo, teclando k e depois indicando o PID do processo alvo.
+
+
+Conclusão
+
+    Neste guião vimos como se pode consultar informação sobre processos, com o comando ps. Para ver relações pai-filho existentes entre processos de forma mais clara pode ser usado o comando pstree.
+
+    A seguir, vimos comandos para paragem, espera e contabilização de tempo de execução, sleep, wait, e time, respetivamente.
+    Finalmente, vimos o utilitário top que apresenta uma visão global da utilização de recursos e permite consultar detalhes sobre os principais processos.

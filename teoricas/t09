@@ -1,0 +1,145 @@
+MULTIPROGRAMAÇÃO ou PSEUDOCONCORRÊNCIA
+
+	Serve para pôr diferentes programas em execução
+	
+	Com apenas um processador executamos varios programas. Em cada instante temporal temos apenas um processo em execução
+
+
+
+	PROCESSO 
+
+		É um programa em execução
+
+		programa é um conjunto de instruções a executar. 
+
+		Quando um programa está em execução denomina-se processo.
+
+		Um processo pode executar diversos programas
+
+		Dois processos diferentes podem partilhar o mesmo programa
+
+		Como consultar a existencia de diferentes processos em execução:
+
+			- em linux usamos o comando ps
+
+			- ps -el | more ---> usando o pipe, em que o pipe concatena comandos
+
+			- no windows é mostrado no task manager
+
+		Um grupo de processos (process group) refere-se a uma coleção de um ou mais processo
+
+
+		MENTALIZANDO UM PROCESSO
+
+
+			Cada programa acredita ser o único a usar o processador
+
+			Há uma abstração que diz ao programador que tem a memória toda para eles, com o processador todo para ele (e os processos também pensam assim)
+
+			Um processo 
+
+				deverá manter um espaço de endereçamento 
+
+				os processos n\ao têm acesso direto ao hardware. Só através de system calls
+
+		ATRIBUTOS DE UM PROCESSO
+
+			Precisa de:
+
+				ID
+
+				PROGRAMA
+
+				ESPAÇO DE ENDEREÇAMENTO
+
+				PRIORIDADE (EM SER FAVORECIDO O ACESSO AO CPU)
+
+				PROCESSO PAI (QUEM CRIOU O PROCESSO)
+
+				CANAIS DE ENTRADA E SAÍDA DE FICHEIROS (TABELA DE FICHEIROS ABERTOS) 
+
+					- pode influenciar os próprios filhos 
+
+				QUOTAS DE UTILIZAÇÃO DE RECURSOS (MEM MAX, ETC)
+
+				CONTEXTO DE SEGURANÇA (QUEM É O DONO, GRUPO A QUE O PROCESSO PERTENCE)
+
+		OPERAÇÕES SOBRE PROCESSOS (PELO SISTEMA)
+
+			CRIAR
+
+			ELIMINAR
+
+			ESPERAR PELA TERMINAÇÃO DE UM PROCESSO
+
+		PROCESSOS IDENTIFICADOS POR INTEIROS
+
+			Há já alguns processos pré atribuídos:
+
+				Processo 0 é o swapper (gestão de memóriaa)
+
+				Processo 1 init é o de inicialização do sistema
+
+
+		HIERARQUIA DE PROCESSOS
+
+			Processos relacionam-se de forma hierárquica
+
+			Novos processos herdam contextos do Processo pai (Herança)
+
+			Se o processo pai terminar antes dos processos filhos terminarem há um problema
+
+				Para resolver, o processo init adopta os filhos cujos pais terminaram antes dos filhos morrerem 
+
+				E assim percebem que são gerados a partir do init
+
+		CRIAR PROCESSOS 
+
+			*id = fork()
+
+				não leva nenhum parâmetro.
+
+				não podemos pedir para por em execução um programa diferente
+
+				o processo que vai ser criado será um cópia que executa o mesmo programa a partir do mesmo ponto (a seguir a linha que tem fork)
+
+				é copiado todo o espaço de enderaçamento, pilhas e o contexto de execução(PROGRAM COUNTER, atributos e a tabela dos ficheiros abertos)
+
+				processo filho é cópia independente do pai.
+
+				que atribbutos diferem do pai?
+
+					ao processo pai é devolvido um valor maior que 0 se for berm sucedido quando chamam a fork. esse int é do pid do filho e o filho recebe 0.
+
+		TERMINAÇÃO DO PROCESSO
+
+			*void exit(int status)
+
+				termina o processo e liberta todos os recuros
+
+				assinala ao processo pai a terminação 
+
+					0 é sucesso
+
+					valor negativo ou diferentes de 0 indicam um problema. 
+
+				diferença de return e exit
+
+					é igual porque o compilador embrulha o main dentro de uma função auxiliar e chama um exit com  o valor devolvido pelo main
+
+		AGUARDAR PELA TERMINAÇÃO DO PROCESSO
+
+			*int wait (int *status)
+
+				Quando um processo chama o wait ele fica bloqueado até um dos filhos terminar.
+
+				wait devolve o pid do processo que terminou
+
+				Se não quisermos sber do valor devolvido pelo processo filho devolvemos null
+
+				Um processo não termina sempre com exit 
+
+					por vezes podemos terminar com o ctrl+c.
+
+						assim, como não é chamado o exit, precisamos verificar com a macro WIFEXITED(status) se ele saiu com exit ou nao 
+
