@@ -1,0 +1,45 @@
+como previnir interblocagem? 
+	
+	ordenar os trincos garantindo uma ordem fixa pre definida
+
+		VANTAGENS
+
+			impede interblocagem de existir
+
+		DESVANTAGENS
+
+			nem sempre conseguimos definir uma ordem (recomendada para o projeto)
+
+
+	caso essa alternativa nao seja viavel, usamos try locks 
+
+		VANTAGENS
+
+			nao precisamos ter uma ordem definida para como os nossos locks funcionam
+
+		DESVANTAGENS
+
+			esgota recursos (tempo e locks tentados)
+
+Para declarar um mutex:
+
+	Forma estática:
+
+		pthread_mutex_t trincoA = PTHREAD_MUTEX_INITIALIZER
+
+	Forma dinâmica:
+
+		int pthread_mutex_init(pthread_mutex_t *trincoA, pthread_mutexattr_t *attr)
+
+			onde attribute pode ser null
+
+
+QUANDO É QUE DEVEMOS USAR UM TRINCO?
+
+	Sempre que quisermos fazer verificações e mudanças.
+
+	Pomos antes do if(trancar) e depois do ultimo else relativo (destrancar)
+
+	Devemos sempre libertar o mutex depois do ultimo else porque se so libretarmos no if ele pode ficar preso para sempre
+
+			

@@ -1,0 +1,20 @@
+No ciclo de vida do processo 
+
+	nasce com a fork e é executado durante o tempo
+
+	é terminado usando o exit
+
+	depois (quando "terminam") ficam num estado de zombie até o pai chamar o wait().
+
+	depois de ser chamado o wait então o SO se esquece do ficheiro (é apagado)
+
+EXEC
+
+	Serve para ter um filho a executar codigo diferente do pai.
+
+		execl ---> lista
+
+		execv() melhor 
+
+
+which serve para saber onde um programa está
